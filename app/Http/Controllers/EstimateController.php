@@ -433,9 +433,9 @@ class EstimateController extends Controller
 
     public function sendWhatsAppMessage(string $message, string $recipient)
     {
-        $twilio_whatsapp_number = getenv('TWILIO_WHATSAPP_NUMBER');
-        $account_sid = getenv("TWILIO_SID");
-        $auth_token = getenv("TWILIO_AUTH_TOKEN");
+        $twilio_whatsapp_number = '+14155238886';
+        $account_sid = 'AC02dd6e16114e3fe1db4e2e5ce134fd8e';
+        $auth_token = 'ee3930f1ae4d3a6737ca79c9d0b8feae';
 
         $client = new Client($account_sid, $auth_token);
 
