@@ -24,7 +24,6 @@ class EstimateController extends Controller
         // dd(4);
 
         if($phone->stage_model == 'new'){
-
             if($body == "estimate"){
                 $phone->stage_model = 'inputPickup';
                 $phone->save();
