@@ -447,6 +447,8 @@ class EstimateController extends Controller
         $account_sid = config('services.twilio.sid');
         $auth_token = config('services.twilio.token');
 
+        dd(config('services.twilio.token'), config('services.twilio.sid'), config('services.twilio.whatsapp_from'));
+
         $client = new Client($account_sid, $auth_token);
 
         return $client->messages->create($recipient, array('from' => "whatsapp:$twilio_whatsapp_number", 'body' => $message));
