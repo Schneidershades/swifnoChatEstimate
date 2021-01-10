@@ -447,7 +447,7 @@ class EstimateController extends Controller
         $account_sid = config('services.twilio.sid');
         $auth_token = config('services.twilio.token');
 
-        dd(config('services.twilio.whatsapp_from'));
+        dd($account_sid, $auth_token);
 
         $client = new Client($account_sid, $auth_token);
 
