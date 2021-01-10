@@ -88,8 +88,7 @@ class EstimateController extends Controller
         $phone = $this->dbSavedRequest($from, $body);
         $phone->stage_model = 'checkPickup';
         $phone->save();
-
-        return "Kindly type a pickup address";
+        return $this->sendWhatsAppMessage('Kindly type a pickup address', $from);
     }
 
     public function checkPickup($from, $body)
@@ -122,7 +121,7 @@ class EstimateController extends Controller
         $message .= "Press *f9* to go to previous \n ";
         $message .= "Press *x* to cancel session \n ";
 
-        return $message;
+        return $this->sendWhatsAppMessage($message, $from);
     }
 
     public function checkDropoff($from, $body)
@@ -143,7 +142,7 @@ class EstimateController extends Controller
         $message .= "Press *f9* to go to previous \n ";
         $message .= "Press *x* to cancel session \n ";
 
-        return $message;
+        return $this->sendWhatsAppMessage($message, $from);
     }
 
     public function inputShortCategory($from, $body)
@@ -180,7 +179,7 @@ class EstimateController extends Controller
         $message .= "Press *f9* to go to previous \n ";
         $message .= "Press *x* to cancel session \n ";
 
-		return $message;
+		return $this->sendWhatsAppMessage($message, $from);
     }
 
     public function inputFullCategory($from, $body)
@@ -213,7 +212,7 @@ class EstimateController extends Controller
         $message .= "Press *f9* to go to previous \n ";
         $message .= "Press *x* to cancel session \n ";
 
-		return $message;
+		return $this->sendWhatsAppMessage($message, $from);
     }
 
     public function checkCategory($from, $body)
@@ -264,7 +263,7 @@ class EstimateController extends Controller
         $message .= "Press *f9* to go to previous \n ";
         $message .= "Press *x* to cancel session \n ";
 
-		return $message;
+		return $this->sendWhatsAppMessage($message, $from);
     }
 
     public function inputSize($from, $body)
@@ -296,7 +295,7 @@ class EstimateController extends Controller
         $message .= "\n Press *f9* to go to previous \n ";
         $message .= "Press *x* to cancel session \n ";
 
-		return $message;
+		return $this->sendWhatsAppMessage($message, $from);
     }
 
     public function checkSize($from, $body)
@@ -342,7 +341,7 @@ class EstimateController extends Controller
         $message .= " \n Press *f9* to go to previous \n ";
         $message .= "Press *x* to cancel session \n ";
 
-		return $message;
+		return $this->sendWhatsAppMessage($message, $from);
     }
 
     public function inputInsurance($from, $body)
@@ -363,7 +362,7 @@ class EstimateController extends Controller
         $message .= "0 - Not Insured \n ";
         $message .= "1 - Insured \n ";
 
-        return $message;
+        return $this->sendWhatsAppMessage($message, $from);
     }
 
     public function checkInsurance($from, $body)
@@ -402,12 +401,12 @@ class EstimateController extends Controller
     		$phone->save();
 
 
-			return $message;
+			return $this->sendWhatsAppMessage($message, $from);
 
     	}else{
     		$message .= "Invalid Input \n";
     		$message .= $this->inputInsurance($from, $body);
-    		return $message;	
+    		return $this->sendWhatsAppMessage($message, $from);	
     	}
     }
 
