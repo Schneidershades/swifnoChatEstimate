@@ -21,7 +21,6 @@ class EstimateController extends Controller
         // $phone->stage_model = 'inputSize';
         // $phone->category = null;
         // $phone->save();
-
         // dd(4);
 
         if($phone->stage_model == 'new'){
