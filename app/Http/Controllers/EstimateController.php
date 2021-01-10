@@ -416,6 +416,8 @@ class EstimateController extends Controller
 
 
     		$phone->stage_model = "end";
+    		$phone->terminate = true;
+    		$phone->finished = true;
     		$phone->save();
 
 
