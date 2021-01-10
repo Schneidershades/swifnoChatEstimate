@@ -29,14 +29,14 @@ class EstimateController extends Controller
         // $phone->save();
         // dd(4);
 
-        if($phone->stage_model == 'new'){
-            $message = "*Welcome To Swifno!!!*\n";
-	        $message .= "I am here to assist you\n";
-	        $message .= "Please kindly type *estimate* to access our support features\n";
+        // if($phone->stage_model == 'new'){
+        //     $message = "*Welcome To Swifno!!!*\n";
+	       //  $message .= "I am here to assist you\n";
+	       //  $message .= "Please kindly type *estimate* to access our support features\n";
 
-	        // return $message;
-	        return $this->sendWhatsAppMessage($message, $from);
-        }
+	       //  // return $message;
+	       //  return $this->sendWhatsAppMessage($message, $from);
+        // }
 
         if($body == "estimate"){
             $phone->stage_model = 'inputPickup';
