@@ -39,6 +39,7 @@ class EstimateController extends Controller
             $message .= "Search Session was cancelled. Type menu to proceed";
         }
 
+
         if($phone->stage_model == 'inputPickup' && $phone->pickup == null){
         	return $this->inputPickup($from, $body);
         }
@@ -82,6 +83,15 @@ class EstimateController extends Controller
         if($phone->stage_model == 'checkInsurance' && $phone->insurance == null){
         	return $this->checkInsurance($from, $body);
         }
+
+
+
+        $message = "*Welcome To Swifno!!!*\n";
+        $message .= "I am here to assist you\n";
+        $message .= "Please kindly type *estimate* to access our support features\n";
+
+        // return $message;
+        return $this->sendWhatsAppMessage($message, $from);
     }
 
     public function inputPickup($from, $body)
