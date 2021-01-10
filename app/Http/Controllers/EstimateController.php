@@ -449,7 +449,12 @@ class EstimateController extends Controller
 
         $client = new Client($account_sid, $auth_token);
 
-        return $client->messages->create($recipient, array('from' => "whatsapp:$twilio_whatsapp_number", 'body' => $message));
+        // return $client->messages->create($recipient, array('from' => "whatsapp:$twilio_whatsapp_number", 'body' => $message));
+
+        return $twilio->messages->create('whatsapp:' . $to, [
+            "from" => 'whatsapp:' . $twilio_whatsapp_number,
+            "body" => $message
+        ]);
     }
 
 }
