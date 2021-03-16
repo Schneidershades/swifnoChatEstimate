@@ -18,87 +18,166 @@ class EstimateController extends Controller
 
         $message = null;
 
-
-        // return $this->sendWhatsAppMessage('ddd', $from);
-
         $phone = $this->dbSavedRequest($from, $body);
-
-
-        // $phone->stage_model = 'inputSize';
-        // $phone->category = null;
-        // $phone->save();
-        // dd(4);
-
-        // if($phone->stage_model == 'new'){
-        //     $message = "*Welcome To Swifno!!!*\n";
-	       //  $message .= "I am here to assist you\n";
-	       //  $message .= "Please kindly type *estimate* to access our support features\n";
-
-	       //  // return $message;
-	       //  return $this->sendWhatsAppMessage($message, $from);
-        // }
 
         if($body == "estimate"){
             $phone->stage_model = 'inputPickup';
             $phone->save();
-        }
-
-        if($body == 'cancel'){
+            return $this->inputPickup($from, $body);
+        }elseif($body == "courier"){
+            $phone->stage_model = 'inputCourierPickup';
+            $phone->save();
+            return $this->inputCourierPickup($from, $body);
+        }elseif($body == 'cancel'){
             $phone->terminate = true;
             $phone->finished = true;
             $phone->save();
 
             $message .= "Search Session was cancelled. Type menu to proceed";
-        }
-
-
-        if($phone->stage_model == 'inputPickup' && $phone->pickup == null){
+        }elseif($phone->stage_model == 'inputCourierPickup' && $phone->pickup == null){
+            return $this->inputCourierPickup($from, $body);
+        }elseif($phone->stage_model == 'checkCourierPickup' && $phone->pickup == null){
+            return $this->checkCourierPickup($from, $body);
+        }elseif($phone->stage_model == 'inputCourierDropoff' && $phone->dropoff == null){
+            return $this->inputCourierDropoff($from, $body);
+        }elseif($phone->stage_model == 'checkCourierDropoff' && $phone->dropoff == null){
+            return $this->checkCourierDropoff($from, $body);
+        }elseif($phone->stage_model == 'vendorList' && $phone->dropoff == null){
+            return $this->vendorList($from, $body);
+        }elseif($phone->stage_model == 'inputPickup' && $phone->pickup == null){
         	return $this->inputPickup($from, $body);
-        }
-
-        if($phone->stage_model == 'checkPickup' && $phone->pickup == null){
+        }if($phone->stage_model == 'checkPickup' && $phone->pickup == null){
         	return $this->checkPickup($from, $body);
-        }
-
-        if($phone->stage_model == 'inputDropoff' && $phone->dropoff == null){
+        }if($phone->stage_model == 'inputDropoff' && $phone->dropoff == null){
         	return $this->inputDropoff($from, $body);
-        }
-
-        if($phone->stage_model == 'checkDropoff' && $phone->dropoff == null){
+        }if($phone->stage_model == 'checkDropoff' && $phone->dropoff == null){
         	return $this->checkDropoff($from, $body);
-        }
-
-        if($phone->stage_model == 'inputShortCategory' && $phone->category == null){
+        }if($phone->stage_model == 'inputShortCategory' && $phone->category == null){
         	return $this->checkCategory($from, $body);
-        }
-
-        if($phone->stage_model == 'inputFullCategory' && $phone->category == null){
+        }if($phone->stage_model == 'inputFullCategory' && $phone->category == null){
         	return $this->checkCategory($from, $body);
-        }
-
-        if($phone->stage_model == 'checkCategory' && $phone->category == null){
+        }if($phone->stage_model == 'checkCategory' && $phone->category == null){
         	return $this->checkCategory($from, $body);
-        }
-
-        if($phone->stage_model == 'inputSize' && $phone->size == null){
+        }if($phone->stage_model == 'inputSize' && $phone->size == null){
         	return $this->inputSize($from, $body);
-        }
-
-        if($phone->stage_model == 'checkSize' && $phone->size == null){
+        }if($phone->stage_model == 'checkSize' && $phone->size == null){
         	return $this->checkSize($from, $body);
-        }
-
-        if($phone->stage_model == 'insurance' && $phone->insurance == null){
+        }if($phone->stage_model == 'insurance' && $phone->insurance == null){
         	return $this->inputInsurance($from, $body);
-        }
-
-        if($phone->stage_model == 'checkInsurance' && $phone->insurance == null){
+        }if($phone->stage_model == 'checkInsurance' && $phone->insurance == null){
         	return $this->checkInsurance($from, $body);
+        }else{
+            $message = "*Welcome To Swifno!!!*\n";
+            $message .= "I am here to assist you\n";
+            $message .= "Type *estimate* to access our delivery estimate features\n";
+            $message .= "Type *courier* to access our courier vendor lists\n";
         }
 
+        return $message;
+        //  return $this->sendWhatsAppMessage($message, $from);
+    }
 
+    public function inputCourierPickup($from, $body)
+    {
+        $phone = $this->dbSavedRequest($from, $body);
+        $phone->stage_model = 'checkCourierPickup';
+        $phone->save();
 
-        
+        return 'Kindly type a courier pickup address';
+        // return $this->sendWhatsAppMessage('Kindly type a pickup address', $from);
+    }
+
+    public function checkCourierPickup($from, $body)
+    {
+        if (str_word_count($body) <= 1){
+            return "invalid address input";
+        }
+
+        $phone = $this->dbSavedRequest($from, $body);
+        $phone->stage_model = 'inputCourierDropoff';
+        $phone->pickup = $body;
+        $phone->save();
+
+        return $this->inputCourierDropoff($from, $body);
+    }
+
+    public function inputCourierDropoff($from, $body)
+    {
+        $phone = $this->dbSavedRequest($from, $body);
+        $phone->stage_model = 'checkCourierDropoff';
+        $phone->save();
+
+        $message =  null;
+
+        $message .= 'PickUp Location : ' . $phone->pickup." \n  \n ";
+
+        $message .= "kindly type a courier dropoff address \n  \n  ";
+
+        $message .= "Press *f9* to go to previous \n ";
+        $message .= "Press *x* to cancel session \n ";
+
+        return $message;
+
+        return $this->sendWhatsAppMessage($message, $from);
+    }
+
+    public function checkCourierDropoff($from, $body)
+    {
+        $message =  null;
+
+        $phone = $this->dbSavedRequest($from, $body);
+
+        if($body == 'f9'){
+            $phone->stage_model = 'checkCourierDropoff';
+            $phone->save();
+            return $this->inputCourierDropoff($from, $body);
+        }elseif (str_word_count($body) <= 1){
+            $message .= "Invalid courier dropoff address input \n \n ";
+        }else{
+
+            $response = Http::withOptions([
+                'verify' => false
+            ])->get('https://swifno.com/v1/api.php', [
+                'action' => 'couriers',
+                'pickup' => $phone->pickup,
+                'dropoff' => $body,
+                'auth_token' => '8dc59f308dcedf091d4310c928e581cd',
+            ]);
+
+            $response = $response->json();
+
+            // dd($response);
+
+            if(array_key_exists('RESPONSECODE', $response)){
+                if($response['RESPONSECODE'] == false){
+
+                    $message .= "Invalid courier dropoff address input. Please insert an accurate address\n \n ";
+
+                }else{
+
+                    $message .= "*Vendor List*   \n ";
+
+                    foreach ($response['VENDOR_LIST'] as $key => $vendor) {
+                        $message .= $key+1 ." - ". $vendor ." \n ";
+                    }
+                    $phone->stage_model = "end";
+                    $phone->terminate = true;
+                    $phone->finished = true;
+                    $phone->save();
+                }
+            }
+
+            return $message;
+
+            return $this->sendWhatsAppMessage($message, $from);
+        }
+
+        $message .= "Press *f9* to go to previous \n ";
+        $message .= "Press *x* to cancel session \n ";
+
+        return $message;
+
+        return $this->sendWhatsAppMessage($message, $from);
     }
 
     public function inputPickup($from, $body)
@@ -106,7 +185,9 @@ class EstimateController extends Controller
         $phone = $this->dbSavedRequest($from, $body);
         $phone->stage_model = 'checkPickup';
         $phone->save();
-        return $this->sendWhatsAppMessage('Kindly type a pickup address', $from);
+
+        return 'Kindly type a pickup address';
+        // return $this->sendWhatsAppMessage('Kindly type a pickup address', $from);
     }
 
     public function checkPickup($from, $body)
@@ -139,6 +220,8 @@ class EstimateController extends Controller
         $message .= "Press *f9* to go to previous \n ";
         $message .= "Press *x* to cancel session \n ";
 
+        return $message;
+
         return $this->sendWhatsAppMessage($message, $from);
     }
 
@@ -156,9 +239,10 @@ class EstimateController extends Controller
 	        return $this->inputShortCategory($from, $body);
     	}
 
-    	
         $message .= "Press *f9* to go to previous \n ";
         $message .= "Press *x* to cancel session \n ";
+
+        return $message;
 
         return $this->sendWhatsAppMessage($message, $from);
     }
@@ -184,6 +268,12 @@ class EstimateController extends Controller
 
     	$message .= 'Please Select Category from the list below: ??'." \n  \n ";
 
+        $keys = array_column($response['CATEGORYLIST'], 'cat_id');
+
+        array_multisort($keys, SORT_ASC, $response['CATEGORYLIST']);
+
+        // dd($response['CATEGORYLIST']);
+
     	foreach ($response['CATEGORYLIST'] as $key => $category) {
     		if($key <= 7){
     			$message .= $category['cat_id'] .' - '. $category['cat_name'] .' || '. $category['group_name'] ." \n ";
@@ -196,6 +286,8 @@ class EstimateController extends Controller
     	$message .= " \n  Please Press *f8* to view full list \n ";
         $message .= "Press *f9* to go to previous \n ";
         $message .= "Press *x* to cancel session \n ";
+
+        return $message;
 
 		return $this->sendWhatsAppMessage($message, $from);
     }
@@ -223,12 +315,18 @@ class EstimateController extends Controller
 
     	$message .= 'Please Select Category from the list below: ??'." \n  \n ";
 
+        $keys = array_column($response['CATEGORYLIST'], 'cat_id');
+
+        array_multisort($keys, SORT_ASC, $response['CATEGORYLIST']);
+
     	foreach ($response['CATEGORYLIST'] as $key => $category) {
     		$message .= $category['cat_id'] .' - '. $category['cat_name'] .' || '. $category['group_name'] ." \n ";
     	}
 
         $message .= "Press *f9* to go to previous \n ";
         $message .= "Press *x* to cancel session \n ";
+
+        return $message;
 
 		return $this->sendWhatsAppMessage($message, $from);
     }
@@ -281,6 +379,8 @@ class EstimateController extends Controller
         $message .= "Press *f9* to go to previous \n ";
         $message .= "Press *x* to cancel session \n ";
 
+        return $message;
+
 		return $this->sendWhatsAppMessage($message, $from);
     }
 
@@ -312,6 +412,8 @@ class EstimateController extends Controller
 
         $message .= "\n Press *f9* to go to previous \n ";
         $message .= "Press *x* to cancel session \n ";
+
+        return $message;
 
 		return $this->sendWhatsAppMessage($message, $from);
     }
@@ -359,6 +461,8 @@ class EstimateController extends Controller
         $message .= " \n Press *f9* to go to previous \n ";
         $message .= "Press *x* to cancel session \n ";
 
+        return $message;
+
 		return $this->sendWhatsAppMessage($message, $from);
     }
 
@@ -380,11 +484,13 @@ class EstimateController extends Controller
         $message .= "0 - Not Insured \n ";
         $message .= "1 - Insured \n ";
 
+        return $message;
+
         return $this->sendWhatsAppMessage($message, $from);
     }
 
     public function checkInsurance($from, $body)
-    {    	
+    {
     	$message = null;
 
     	$phone = $this->dbSavedRequest($from, $body);
@@ -412,7 +518,7 @@ class EstimateController extends Controller
     		$message .= 'DropOff Location : ' . $phone->dropoff." \n ";
     		$message .= 'Item Category: '.$phone->category. " \n ";
     		$message .= 'Item size: '.$phone->size. " \n ";
-			$message .= 'Your logistics fee is '. $response['ESTIMATION']. " \n  \n ";
+			$message .= 'Your logistics fee is '. array_key_exists('ESTIMATION', $response) ? $response['ESTIMATION'] : 'Not Availble at the moment'. " \n  \n ";
 
 
     		$phone->stage_model = "end";
@@ -420,12 +526,16 @@ class EstimateController extends Controller
     		$phone->finished = true;
     		$phone->save();
 
+            return $message;
+
 
 			return $this->sendWhatsAppMessage($message, $from);
 
     	}else{
     		$message .= "Invalid Input \n";
     		$message .= $this->inputInsurance($from, $body);
+
+            return $message;
     		return $this->sendWhatsAppMessage($message, $from);	
     	}
     }
