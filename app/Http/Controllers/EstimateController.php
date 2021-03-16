@@ -20,61 +20,71 @@ class EstimateController extends Controller
 
         $phone = $this->dbSavedRequest($from, $body);
 
+        // return $phone;
+
         if($body == "estimate"){
             $phone->stage_model = 'inputPickup';
             $phone->save();
-            return $this->inputPickup($from, $body);
-        }elseif($body == "courier"){
+        }
+
+        if($body == "courier"){
             $phone->stage_model = 'inputCourierPickup';
             $phone->save();
-            return $this->inputCourierPickup($from, $body);
-        }elseif($body == 'cancel'){
+        }
+
+        if($body == 'cancel'){
             $phone->terminate = true;
             $phone->finished = true;
             $phone->save();
 
-            $message .= "Search Session was cancelled. Type menu to proceed";
-        }elseif($phone->stage_model == 'inputCourierPickup' && $phone->pickup == null){
-            return $this->inputCourierPickup($from, $body);
-        }elseif($phone->stage_model == 'checkCourierPickup' && $phone->pickup == null){
-            return $this->checkCourierPickup($from, $body);
-        }elseif($phone->stage_model == 'inputCourierDropoff' && $phone->dropoff == null){
-            return $this->inputCourierDropoff($from, $body);
-        }elseif($phone->stage_model == 'checkCourierDropoff' && $phone->dropoff == null){
-            return $this->checkCourierDropoff($from, $body);
-        }elseif($phone->stage_model == 'vendorList' && $phone->dropoff == null){
-            return $this->vendorList($from, $body);
-        }elseif($phone->stage_model == 'inputPickup' && $phone->pickup == null){
-        	return $this->inputPickup($from, $body);
-        }if($phone->stage_model == 'checkPickup' && $phone->pickup == null){
-        	return $this->checkPickup($from, $body);
-        }if($phone->stage_model == 'inputDropoff' && $phone->dropoff == null){
-        	return $this->inputDropoff($from, $body);
-        }if($phone->stage_model == 'checkDropoff' && $phone->dropoff == null){
-        	return $this->checkDropoff($from, $body);
-        }if($phone->stage_model == 'inputShortCategory' && $phone->category == null){
-        	return $this->checkCategory($from, $body);
-        }if($phone->stage_model == 'inputFullCategory' && $phone->category == null){
-        	return $this->checkCategory($from, $body);
-        }if($phone->stage_model == 'checkCategory' && $phone->category == null){
-        	return $this->checkCategory($from, $body);
-        }if($phone->stage_model == 'inputSize' && $phone->size == null){
-        	return $this->inputSize($from, $body);
-        }if($phone->stage_model == 'checkSize' && $phone->size == null){
-        	return $this->checkSize($from, $body);
-        }if($phone->stage_model == 'insurance' && $phone->insurance == null){
-        	return $this->inputInsurance($from, $body);
-        }if($phone->stage_model == 'checkInsurance' && $phone->insurance == null){
-        	return $this->checkInsurance($from, $body);
-        }else{
+            $message = "Search Session was cancelled. Type menu to proceed";
+        }
+
+        if($phone->stage_model == "new"){
             $message = "*Welcome To Swifno!!!*\n";
             $message .= "I am here to assist you\n";
             $message .= "Type *estimate* to access our delivery estimate features\n";
             $message .= "Type *courier* to access our courier vendor lists\n";
         }
 
+
+        if($phone->stage_model == 'inputCourierPickup' && $phone->pickup == null){
+            $message = $this->inputCourierPickup($from, $body);
+        }elseif($phone->stage_model == 'checkCourierPickup' && $phone->pickup == null){
+            $message = $this->checkCourierPickup($from, $body);
+        }elseif($phone->stage_model == 'inputCourierDropoff' && $phone->dropoff == null){
+            $message = $this->inputCourierDropoff($from, $body);
+        }elseif($phone->stage_model == 'checkCourierDropoff' && $phone->dropoff == null){
+            $message = $this->checkCourierDropoff($from, $body);
+        }elseif($phone->stage_model == 'vendorList' && $phone->dropoff == null){
+            $message = $this->vendorList($from, $body);
+        }elseif($phone->stage_model == 'inputPickup' && $phone->pickup == null){
+        	$message = $this->inputPickup($from, $body);
+        }elseif($phone->stage_model == 'checkPickup' && $phone->pickup == null){
+        	$message = $this->checkPickup($from, $body);
+        }elseif($phone->stage_model == 'inputDropoff' && $phone->dropoff == null){
+        	$message = $this->inputDropoff($from, $body);
+        }elseif($phone->stage_model == 'checkDropoff' && $phone->dropoff == null){
+        	$message = $this->checkDropoff($from, $body);
+        }elseif($phone->stage_model == 'inputShortCategory' && $phone->category == null){
+        	$message = $this->checkCategory($from, $body);
+        }elseif($phone->stage_model == 'inputFullCategory' && $phone->category == null){
+        	$message = $this->checkCategory($from, $body);
+        }elseif($phone->stage_model == 'checkCategory' && $phone->category == null){
+        	$message = $this->checkCategory($from, $body);
+        }elseif($phone->stage_model == 'inputSize' && $phone->size == null){
+        	$message = $this->inputSize($from, $body);
+        }elseif($phone->stage_model == 'checkSize' && $phone->size == null){
+        	$message = $this->checkSize($from, $body);
+        }elseif($phone->stage_model == 'insurance' && $phone->insurance == null){
+        	$message = $this->inputInsurance($from, $body);
+        }elseif($phone->stage_model == 'checkInsurance' && $phone->insurance == null){
+        	$message = $this->checkInsurance($from, $body);
+        }
+
+
         return $message;
-        //  return $this->sendWhatsAppMessage($message, $from);
+         // return $this->sendWhatsAppMessage($message, $from);
     }
 
     public function inputCourierPickup($from, $body)
@@ -84,7 +94,6 @@ class EstimateController extends Controller
         $phone->save();
 
         return 'Kindly type a courier pickup address';
-        // return $this->sendWhatsAppMessage('Kindly type a pickup address', $from);
     }
 
     public function checkCourierPickup($from, $body)
@@ -117,8 +126,6 @@ class EstimateController extends Controller
         $message .= "Press *x* to cancel session \n ";
 
         return $message;
-
-        return $this->sendWhatsAppMessage($message, $from);
     }
 
     public function checkCourierDropoff($from, $body)
@@ -168,16 +175,12 @@ class EstimateController extends Controller
             }
 
             return $message;
-
-            return $this->sendWhatsAppMessage($message, $from);
         }
 
         $message .= "Press *f9* to go to previous \n ";
         $message .= "Press *x* to cancel session \n ";
 
         return $message;
-
-        return $this->sendWhatsAppMessage($message, $from);
     }
 
     public function inputPickup($from, $body)
@@ -187,7 +190,6 @@ class EstimateController extends Controller
         $phone->save();
 
         return 'Kindly type a pickup address';
-        // return $this->sendWhatsAppMessage('Kindly type a pickup address', $from);
     }
 
     public function checkPickup($from, $body)
@@ -221,8 +223,6 @@ class EstimateController extends Controller
         $message .= "Press *x* to cancel session \n ";
 
         return $message;
-
-        return $this->sendWhatsAppMessage($message, $from);
     }
 
     public function checkDropoff($from, $body)
@@ -243,8 +243,6 @@ class EstimateController extends Controller
         $message .= "Press *x* to cancel session \n ";
 
         return $message;
-
-        return $this->sendWhatsAppMessage($message, $from);
     }
 
     public function inputShortCategory($from, $body)
@@ -288,8 +286,6 @@ class EstimateController extends Controller
         $message .= "Press *x* to cancel session \n ";
 
         return $message;
-
-		return $this->sendWhatsAppMessage($message, $from);
     }
 
     public function inputFullCategory($from, $body)
@@ -327,8 +323,6 @@ class EstimateController extends Controller
         $message .= "Press *x* to cancel session \n ";
 
         return $message;
-
-		return $this->sendWhatsAppMessage($message, $from);
     }
 
     public function checkCategory($from, $body)
@@ -380,8 +374,6 @@ class EstimateController extends Controller
         $message .= "Press *x* to cancel session \n ";
 
         return $message;
-
-		return $this->sendWhatsAppMessage($message, $from);
     }
 
     public function inputSize($from, $body)
@@ -414,8 +406,6 @@ class EstimateController extends Controller
         $message .= "Press *x* to cancel session \n ";
 
         return $message;
-
-		return $this->sendWhatsAppMessage($message, $from);
     }
 
     public function checkSize($from, $body)
@@ -462,8 +452,6 @@ class EstimateController extends Controller
         $message .= "Press *x* to cancel session \n ";
 
         return $message;
-
-		return $this->sendWhatsAppMessage($message, $from);
     }
 
     public function inputInsurance($from, $body)
@@ -485,8 +473,6 @@ class EstimateController extends Controller
         $message .= "1 - Insured \n ";
 
         return $message;
-
-        return $this->sendWhatsAppMessage($message, $from);
     }
 
     public function checkInsurance($from, $body)
@@ -528,15 +514,11 @@ class EstimateController extends Controller
 
             return $message;
 
-
-			return $this->sendWhatsAppMessage($message, $from);
-
     	}else{
     		$message .= "Invalid Input \n";
     		$message .= $this->inputInsurance($from, $body);
 
             return $message;
-    		return $this->sendWhatsAppMessage($message, $from);	
     	}
     }
 
