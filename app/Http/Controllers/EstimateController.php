@@ -82,9 +82,7 @@ class EstimateController extends Controller
         	$message = $this->checkInsurance($from, $body);
         }
 
-
-        return $message;
-         // return $this->sendWhatsAppMessage($message, $from);
+        return $this->sendWhatsAppMessage($message, $from);
     }
 
     public function inputCourierPickup($from, $body)
