@@ -502,7 +502,7 @@ class EstimateController extends Controller
     		$message .= 'DropOff Location : ' . $phone->dropoff." \n ";
     		$message .= 'Item Category: '.$phone->category. " \n ";
     		$message .= 'Item size: '.$phone->size. " \n \n";
-			$message .= "Your logistics fee is ". $response['ESTIMATION'] . " \n  \n ";
+			$message .= "Delivery Estimate: ₦ ". $response['ESTIMATION'] . " \n  \n ";
 
 
     		$phone->stage_model = "end";
